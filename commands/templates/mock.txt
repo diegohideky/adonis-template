@@ -1,0 +1,25 @@
+import {{name}} from 'App/Models/{{name}}'
+import faker from 'faker'
+
+const mock = async (testId: string, params?: Partial<{{name}}>) => {
+  return {
+    name: faker.name.findName(),
+    ...params,
+    testId,
+  }
+}
+
+const mockMany = async (testId: string, quantity?: number) => {
+  return Promise.all(
+    Array.from({ length: quantity || faker.datatype.number({ min: 1, max: 10 }) }).map(async () =>
+      mock(testId)
+    )
+  )
+}
+
+const {{name}}Mock = {
+  mock,
+  mockMany,
+}
+
+export default {{name}}Mock

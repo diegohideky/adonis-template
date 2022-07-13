@@ -1,0 +1,6 @@
+export enum {{name}}Permissions {
+  READ_{{enumName}} = 'READ_{{enumName}}',
+  CREATE_{{enumName}} = 'CREATE_{{enumName}}',
+  UPDATE_{{enumName}} = 'UPDATE_{{enumName}}',
+  DELETE_{{enumName}} = 'DELETE_{{enumName}}',
+}

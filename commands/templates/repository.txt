@@ -1,0 +1,10 @@
+import BaseRepository from './BaseRepository'
+import {{name}} from 'App/Models/{{name}}'
+
+import { I{{name}}Repository } from 'App/Interfaces/{{name}}Interface'
+
+export default class {{name}}Repository extends BaseRepository implements I{{name}}Repository {
+  constructor() {
+    super({{name}})
+  }
+}

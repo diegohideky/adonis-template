@@ -1,0 +1,10 @@
+import BaseService from './BaseService'
+import {{name}}Repository from 'App/Repositories/{{name}}Repository'
+
+import { I{{name}}Service } from 'App/Interfaces/{{name}}Interface'
+
+export default class {{name}}Service extends BaseService implements I{{name}}Service {
+  constructor() {
+    super(new {{name}}Repository(), '{{name}}')
+  }
+}

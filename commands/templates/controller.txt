@@ -1,0 +1,10 @@
+import BaseController from './BaseController'
+import {{name}}Service from 'App/Services/{{name}}Service'
+
+import { I{{name}}Controller } from 'App/Interfaces/{{name}}Interface'
+
+export default class {{name}}Controller extends BaseController implements I{{name}}Controller {
+  constructor() {
+    super(new {{name}}Service(), '{{name}}Controller')
+  }
+}

@@ -1,0 +1,241 @@
+import { v4 as uuidv4 } from 'uuid'
+import faker from 'faker'
+import { test } from '@japa/runner'
+import {{name}} from 'App/Models/{{name}}'
+import User from 'App/Models/User'
+import {{name}}Mock from '../mocks/{{path}}.mock'
+import { cleanDB, getEndpoint } from '../utils'
+import { Usernames } from 'App/Enums/Users'
+
+const endpoint = '/api/v1/{{path}}'
+test.group('GET /{{path}} ', (group) => {
+  group.each.setup(cleanDB)
+
+  test('error - when query params are wrong', async ({ client }) => {
+    const testId = uuidv4()
+    const admin = await User.findByOrFail('username', Usernames.ADMIN)
+    const response = await client
+      .get(
+        getEndpoint(endpoint, {
+          page: 'a',
+          pageSize: 'a',
+          order: 'a',
+          direction: 'a',
+          testId,
+        })
+      )
+      .loginAs(admin)
+
+    response.assertStatus(400)
+    response.assertBodyContains({
+      page: ['number validation failed'],
+      pageSize: ['number validation failed'],
+      order: ['enum validation failed'],
+      direction: ['enum validation failed'],
+    })
+  })
+
+  test('success - should return list of {{path}}', async ({ client, assert }) => {
+    const testId = uuidv4()
+    const data = await {{name}}Mock.mockMany(testId)
+    const {{path}} = await {{name}}.createMany(data)
+
+    const admin = await User.findByOrFail('username', Usernames.ADMIN)
+
+    const response = await client.get(getEndpoint(endpoint, { testId })).loginAs(admin)
+
+    response.assertStatus(200)
+    const { payload } = response.body()
+    assert.isTrue(payload.length === {{path}}.length)
+
+    const {{path}}Map = {{path}}.reduce((acc, {{item}}) => {
+      acc[{{item}}.id] = {{item}}
+      return acc
+    }, {})
+
+    payload.forEach(({{item}}) => {
+      assert.equal({{item}}.id, {{path}}Map[{{item}}.id].id)
+      assert.equal({{item}}.name, {{path}}Map[{{item}}.id].name)
+      assert.equal({{item}}.createdAt, {{path}}Map[{{item}}.id].createdAt.toISO().toString())
+      assert.equal({{item}}.updatedAt, {{path}}Map[{{item}}.id].updatedAt.toISO().toString())
+    })
+  })
+})
+
+test.group('GET /{{path}}:id ', (group) => {
+  group.each.setup(cleanDB)
+
+  test('error - when id is invalid - should not return {{item}}', async ({ client }) => {
+    const testId = uuidv4()
+
+    const owner = await User.findByOrFail('username', Usernames.OWNER)
+
+    const data = await {{name}}Mock.mock(testId)
+    const {{item}} = await {{name}}.create(data)
+
+    const response = await client.get(getEndpoint(`${endpoint}/${{open}}{{item}}.id{{close}}aaa`)).loginAs(owner)
+
+    response.assertStatus(400)
+    response.assertBodyContains({
+      id: ['uuid validation failed'],
+    })
+  })
+
+  test('success - when id is valid - should return {{item}} by id', async ({ client, assert }) => {
+    const testId = uuidv4()
+
+    const owner = await User.findByOrFail('username', Usernames.OWNER)
+
+    const data = await {{name}}Mock.mock(testId)
+    const {{item}} = await {{name}}.create(data)
+
+    const response = await client.get(getEndpoint(`${endpoint}/${{open}}{{item}}.id{{close}}`)).loginAs(owner)
+
+    response.assertStatus(200)
+    const { payload } = response.body()
+
+    assert.equal({{item}}.id, payload.id)
+    assert.equal({{item}}.name, payload.name)
+    assert.equal({{item}}.createdAt.toISO().toString(), payload.createdAt)
+    assert.equal({{item}}.updatedAt.toISO().toString(), payload.updatedAt)
+  })
+})
+
+test.group('POST /{{path}}', (group) => {
+  group.each.setup(cleanDB)
+
+  test('error - when body is invalid', async ({ client }) => {
+    const owner = await User.findByOrFail('username', Usernames.OWNER)
+    const response = await client
+      .post(getEndpoint(`${endpoint}`))
+      .loginAs(owner)
+      .form({
+        name: 'aa',
+      })
+
+    response.assertStatus(400)
+    response.assertBodyContains({
+      errors: [
+        {
+          rule: 'minLength',
+          field: 'name',
+          message: 'minLength validation failed',
+          args: {
+            minLength: 5,
+          },
+        },
+      ],
+    })
+  })
+
+  test('success - should create {{item}}', async ({ client, assert }) => {
+    const testId = uuidv4()
+
+    const data = await {{name}}Mock.mock(testId)
+
+    const administrator = await User.findByOrFail('username', Usernames.ADMIN)
+
+    const response = await client
+      .post(getEndpoint(`${endpoint}`))
+      .loginAs(administrator)
+      .form(data)
+
+    response.assertStatus(200)
+    const { payload } = response.body()
+
+    assert.equal(data.name, payload.name)
+  })
+})
+
+test.group('PUT /{{path}}/:id ', (group) => {
+  group.each.setup(cleanDB)
+
+  test('error - when body is invalid', async ({ client }) => {
+    const testId = uuidv4()
+
+    const data = await {{name}}Mock.mock(testId)
+    const {{item}} = await {{name}}.create(data)
+
+    const owner = await User.findByOrFail('username', Usernames.OWNER)
+    const response = await client
+      .put(getEndpoint(`${endpoint}/${{open}}{{item}}.id{{close}}`))
+      .loginAs(owner)
+      .form({
+        name: 'aa',
+      })
+
+    response.assertStatus(400)
+    response.assertBodyContains({
+      errors: [
+        {
+          rule: 'minLength',
+          field: 'name',
+          message: 'minLength validation failed',
+          args: {
+            minLength: 5,
+          },
+        },
+      ],
+    })
+  })
+
+  test('success - should update {{item}}', async ({ client, assert }) => {
+    const testId = uuidv4()
+
+    const data = await {{name}}Mock.mock(testId)
+    const {{item}} = await {{name}}.create(data)
+
+    const admin = await User.findByOrFail('username', Usernames.ADMIN)
+
+    const updateData = {
+      name: faker.company.companyName(),
+    }
+
+    const response = await client
+      .put(getEndpoint(`${endpoint}/${{open}}{{item}}.id{{close}}`))
+      .loginAs(admin)
+      .form(updateData)
+
+    response.assertStatus(200)
+    const { payload } = response.body()
+
+    assert.equal({{item}}.id, payload.id)
+    assert.equal(updateData.name, payload.name)
+  })
+})
+
+test.group('DELETE /{{path}}:id ', (group) => {
+  group.each.setup(cleanDB)
+
+  test('error - when id is invalid - should not delete {{item}}', async ({ client }) => {
+    const testId = uuidv4()
+
+    const data = await {{name}}Mock.mock(testId)
+    const {{item}} = await {{name}}.create(data)
+
+    const owner = await User.findByOrFail('username', Usernames.OWNER)
+    const response = await client.delete(getEndpoint(`${endpoint}/${{open}}{{item}}.id{{close}}aaa`)).loginAs(owner)
+
+    response.assertStatus(400)
+    response.assertBodyContains({
+      id: ['uuid validation failed'],
+    })
+  })
+
+  test('success - admin - should delete {{item}}', async ({ client, assert }) => {
+    const testId = uuidv4()
+
+    const data = await {{name}}Mock.mock(testId)
+    let {{item}}: {{name}} | null = await {{name}}.create(data)
+
+    const admin = await User.findByOrFail('username', Usernames.ADMIN)
+
+    const response = await client.delete(getEndpoint(`${endpoint}/${{open}}{{item}}.id{{close}}`)).loginAs(admin)
+
+    response.assertStatus(200)
+    response.assertBodyContains({ payload: true })
+
+    {{item}} = await {{name}}.findBy('id', {{item}}.id)
+    assert.isNull({{item}})
+  })
+})

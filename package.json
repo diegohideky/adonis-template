@@ -1,0 +1,121 @@
+{
+  "name": "backend-boilerplate",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dc:up": "docker-compose up --build -d",
+    "dc:up:test": "docker-compose -f docker-compose.test.yml up --build -d",
+    "dc:down": "docker-compose down",
+    "dc:down:test": "docker-compose -f docker-compose.test.yml down",
+    "dev": "node ace serve --watch",
+    "build": "node ace build --production",
+    "start": "node server.js",
+    "test": "ENV_PATH=.env.test node ace test",
+    "test:watch": "ENV_PATH=.env.test node ace test -w",
+    "fix": "npm run lint:fix && npm run prettier:fix",
+    "lint": "eslint . --ext=.ts",
+    "lint:fix": "eslint . --ext=.ts --fix",
+    "prettier:fix": "prettier --write \"**/*.{js,ts,json}\"",
+    "prettier:check": "prettier --check \"**/*.{js,ts,json}\"",
+    "db:seed": "node ace db:seed",
+    "db:seed:test": "ENV_PATH=.env.test node ace db:seed",
+    "db:wipe": "node ace db:wipe",
+    "db:wipe:test": "ENV_PATH=.env.test node ace db:wipe",
+    "generate:key": "node ace generate:key",
+    "generate:manifest": "node ace generate:manifest",
+    "make:crud": "node ace crud",
+    "make:controller": "node ace make:controller",
+    "make:exception": "node ace make:exception",
+    "make:entity": "node ace make:model $entity -cm",
+    "make:migration": "node ace make:migration",
+    "make:seeder": "node ace make:seeder",
+    "make:model": "node ace make:model",
+    "mg": "node ace migration:run",
+    "mg:test": "ENV_PATH=.env.test node ace migration:run",
+    "mg:back": "node ace migration:rollback",
+    "mg:back:test": "ENV_PATH=.env.test node ace migration:rollback",
+    "mg:status": "node ace migration:status",
+    "mg:status:test": "ENV_PATH=.env.test node ace migration:status",
+    "mg:reset": "node ace migration:reset",
+    "mg:reset:test": "ENV_PATH=.env.test node ace migration:reset",
+    "mg:refresh": "node ace migration:refresh",
+    "mg:refresh:test": "ENV_PATH=.env.test node ace migration:refresh",
+    "mg:fresh": "node ace migration:fresh",
+    "mg:fresh:test": "ENV_PATH=.env.test node ace migration:fresh",
+    "routes": "node ace list:routes"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:adonis/typescriptApp",
+      "prettier"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error"
+      ]
+    }
+  },
+  "eslintIgnore": [
+    "build"
+  ],
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true,
+    "useTabs": false,
+    "quoteProps": "consistent",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "printWidth": 100
+  },
+  "devDependencies": {
+    "@adonisjs/assembler": "^5.6.2",
+    "@japa/preset-adonis": "^1.0.16",
+    "@japa/runner": "^2.0.8",
+    "@types/faker": "^5.5.3",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/qs": "^6.9.7",
+    "@types/shortid": "^0.0.29",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "adonis-preset-ts": "^2.1.0",
+    "eslint": "^8.16.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-adonis": "^2.1.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "faker": "^5.5.3",
+    "pino-pretty": "^7.6.1",
+    "prettier": "^2.6.2",
+    "typescript": "~4.6",
+    "youch": "^3.2.0",
+    "youch-terminal": "^2.1.4"
+  },
+  "dependencies": {
+    "@adonisjs/auth": "^8.2.1",
+    "@adonisjs/bouncer": "^2.3.0",
+    "@adonisjs/core": "^5.8.2",
+    "@adonisjs/drive-s3": "^1.3.1",
+    "@adonisjs/lucid": "^18.0.0",
+    "@adonisjs/redis": "^7.3.0",
+    "@adonisjs/repl": "^3.1.10",
+    "luxon": "^2.4.0",
+    "pg": "^8.7.3",
+    "phc-bcrypt": "^1.0.7",
+    "proxy-addr": "^2.0.7",
+    "qs": "^6.10.3",
+    "reflect-metadata": "^0.1.13",
+    "shortid": "^2.2.16",
+    "source-map-support": "^0.5.21",
+    "uuid": "^8.3.2"
+  },
+  "engines": {
+    "node": "^16.15.0",
+    "npm": "^8.5.5"
+  }
+}

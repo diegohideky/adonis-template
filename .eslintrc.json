@@ -1,0 +1,22 @@
+{
+  "extends": ["plugin:adonis/typescriptApp", "plugin:prettier/recommended"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": ["snake_case", "PascalCase"]
+      }
+    ],
+    "@typescript-eslint/space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "never",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ]
+  }
+}

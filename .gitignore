@@ -1,0 +1,9 @@
+node_modules
+build
+coverage
+.vscode/settings.json
+.vscode/launch.json
+.DS_STORE
+.env
+tmp
+.data

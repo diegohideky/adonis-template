@@ -1,0 +1,23 @@
+import Route from '@ioc:Adonis/Core/Route'
+import Config from '@ioc:Adonis/Core/Config'
+import validateBody from 'App/Middleware/ValidateBody'
+import validateParams from 'App/Middleware/ValidateParams'
+import validateQuery from 'App/Middleware/ValidateQuery'
+import CommonParamsIdValidator from 'App/Validators/CommonParamsIdValidator'
+import {{name}}CreateValidator from 'App/Validators/{{name}}CreateValidator'
+import {{name}}QueryValidator from 'App/Validators/{{name}}QueryValidator'
+import {{name}}UpdateValidator from 'App/Validators/{{name}}UpdateValidator'
+
+const v1 = Config.get('app.apiV1')
+
+Route.group(() => {
+  Route.get('{{route}}', '{{name}}Controller.index').middleware(validateQuery({{name}}QueryValidator))
+  Route.post('{{route}}', '{{name}}Controller.store').middleware(validateBody({{name}}CreateValidator))
+  Route.get('{{route}}/:id', '{{name}}Controller.show').middleware(validateParams(CommonParamsIdValidator))
+  Route.put('{{route}}/:id', '{{name}}Controller.update')
+    .middleware(validateParams(CommonParamsIdValidator))
+    .middleware(validateBody({{name}}UpdateValidator))
+  Route.delete('{{route}}/:id', '{{name}}Controller.destroy').middleware(
+    validateParams(CommonParamsIdValidator)
+  )
+}).prefix(v1)
